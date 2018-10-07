@@ -1,0 +1,16 @@
+{
+  "initiators": [
+    {
+      "type": "RunLog",
+      "params": { "address": "Chainlinked contract address" }
+    }
+  ],
+  "tasks": [
+    { "type": "Until" }
+    { "type": "HTTPGet" },
+    { "type": "JSONParse" },
+    { "type": "Multiply" },
+    { "type": "EthUint256" },
+    { "type": "EthTx" }
+  ]
+}
