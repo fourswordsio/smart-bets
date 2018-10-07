@@ -29,13 +29,20 @@ function initBetting() {
 	var usr2 = web3.eth.accounts[1]; // TODO: Let user pick maker/taker from the list of accounts?
 
     console.log(usr1);
+
+
+    $.getJSON('Requester.json', function(data) {
+
+        var requester = TruffleContract(data);
+
+    });
 }
 
-var jsonFile = "../build/contracts/Requester.json";
-var parsed = JSON.parse(fs.readFileSync(jsonFile));
-var abi = parsed.abi
+//var jsonFile = "../build/contracts/Requester.json";
+//var parsed = JSON.parse(fs.readFileSync(jsonFile));
+//var abi = parsed.abi
 
- var SmartBetContract = web3.eth.contract(abi);
+// var SmartBetContract = web3.eth.contract(abi);
 //
 // var SmartBet = SmartBetContract.at('PASTE CONTRACT ADDRESS HERE');
 // console.log(SmartBet);
