@@ -1,3 +1,6 @@
+//var ethUtils = require('ethereumjs-util');
+
+
 
 function init() {
   console.log( "init!" );
@@ -22,7 +25,7 @@ function initWeb3() {
 }
 
 
-function initBetting() {
+ function initBetting() {
 
     var usr1 = web3.eth.accounts[0]; // TODO: Let user pick maker/taker from the list of accounts?
 	var usr2 = web3.eth.accounts[1]; // TODO: Let user pick maker/taker from the list of accounts?
@@ -39,7 +42,51 @@ function initBetting() {
         var requester = TruffleContract(data);
         requester.setProvider(web3Provider);
         console.log(requester);
+
+        var hash = web3.sha3("0x_I_am_maker_to_sign");
+
 /*
+        const makerSig = new Promise(function(resolve, reject) {
+            web3.personal.sign(hash, maker, function(err, res) {
+                if (error) {
+                    reject(err);
+                } else {
+                    resolve(res);
+                }
+            })
+        });
+        console.log(makerSig);
+
+        const takeSig = new Promise(function(resolve, reject) {
+            web3.personal.sign(hash, taker, function(err, res) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(res);
+                }
+            })
+        });
+        console.log(takeSig);
+*/
+
+
+        const makerSig =  web3.personal.sign(hash, maker, function(err, res) {
+                            if (err) console.error(err);
+                            console.log(res);
+                        });
+        console.log(makerSig);
+
+        if (taker != "") {
+        hash = web3.sha3("0x_I_am_taker_to_sign");
+        const takerSig =  web3.personal.sign(hash, taker, function(err, res) {
+                            if (err) console.error(err);
+                            console.log(res);
+                        });
+        console.log(takerSig);
+        }
+
+        
+        /*
         requester.deployed().then(function(instance) {
           return instance.???????({from: accounts[0]});
         }).then(function(result) {
