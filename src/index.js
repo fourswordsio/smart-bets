@@ -1,11 +1,9 @@
 
-
 function init() {
   console.log( "init!" );
   // We init web3 so we have access to the blockchain
   initWeb3();
 }
-
 
 function initWeb3() {
   if (typeof web3 !== 'undefined' && typeof web3.currentProvider !== 'undefined') {
@@ -130,7 +128,7 @@ var abi = [ { constant: false,
  var SmartBet = SmartBetContract.at(0x0c93E38613aA69a4fCc3F2EfceCEF30342ea944d);
  console.log(SmartBet);*/
 
- SmartBet.methods["lastEthPrice"]
+ // SmartBet.methods["lastEthPrice"]
 // Coursetro.getInstructor(function(error, result){
 //  if(!error)
 //      {
