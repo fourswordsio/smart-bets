@@ -31,8 +31,6 @@ function initBetting() {
     console.log(usr1);
 }
 
-// var jsonFile = "../build/contracts/Requester.json";
-// var parsed = JSON.parse(fs.readFileSync(jsonFile));
 var abi = [ { constant: false,
     inputs: [],
     name: 'renounceOwnership',
@@ -95,6 +93,7 @@ var abi = [ { constant: false,
  var SmartBet = SmartBetContract.at(0x0c93E38613aA69a4fCc3F2EfceCEF30342ea944d);
  console.log(SmartBet);
 
+ SmartBet.methods["lastEthPrice"]
 // Coursetro.getInstructor(function(error, result){
 //  if(!error)
 //      {
