@@ -27,33 +27,32 @@ function initBetting() {
 	var usr1 = web3.eth.accounts[0]; // TODO: Let user pick maker/taker from the list of accounts?
 	var usr2 = web3.eth.accounts[1]; // TODO: Let user pick maker/taker from the list of accounts?
 
-
+    console.log(usr1);
 }
 
 
-var SmartBetContract = web3.eth.contract(YOUR ABI);
-
-var SmartBet = SmartBetContract.at('PASTE CONTRACT ADDRESS HERE');
-console.log(SmartBet);
-
-Coursetro.getInstructor(function(error, result){
- if(!error)
-     {
-         $("#instructor").html(result[0]+' ('+result[1]+' years old)');
-         console.log(result);
-     }
- else
-     console.error(error);
-});
-
-$("#button").click(function() {
- Coursetro.setInstructor($("#name").val(), $("#age").val());
-});
-
+// var SmartBetContract = web3.eth.contract(YOUR ABI);
+//
+// var SmartBet = SmartBetContract.at('PASTE CONTRACT ADDRESS HERE');
+// console.log(SmartBet);
+//
+// Coursetro.getInstructor(function(error, result){
+//  if(!error)
+//      {
+//          $("#instructor").html(result[0]+' ('+result[1]+' years old)');
+//          console.log(result);
+//      }
+//  else
+//      console.error(error);
+// });
+//
+// $("#button").click(function() {
+//  Coursetro.setInstructor($("#name").val(), $("#age").val());
+// });
+//
 
 // When the page loads, this will call the init() function
-$(function() {
-  $(window).load(function() {
+$( document ).ready(function() {
     init();
-  });
+    console.log( "ready!" );
 });
