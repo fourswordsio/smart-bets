@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 var ethUtil = require('ethereumjs-util');
+=======
+//var ethUtils = require('ethereumjs-util');
+>>>>>>> 40176c35db8c2e5f530388c7cfaa4e085a9b650c
 
 
 const typedData = {
@@ -150,12 +154,12 @@ function signHash(bet) {
     );
 }
 
-web3.eth.accounts.signTransaction({
-    to: '0xF0109fC8DF283027b6285cc889F5aA624EaC1F55',
-    value: '1000000000',
-    gas: 2000000
-}, '0x4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318')
-.then(console.log);
+//web3.eth.accounts.signTransaction({
+//    to: '0xF0109fC8DF283027b6285cc889F5aA624EaC1F55',
+//    value: '1000000000',
+//    gas: 2000000
+//}, '0x4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318')
+//.then(console.log);
 // returns the following
 // {
 //     messageHash: '0x88cfbd7e51c7a40540b233cf68b62ad1df3e92462f1c6018d6d67eae0f3b08f5',
@@ -165,9 +169,9 @@ web3.eth.accounts.signTransaction({
 //     rawTransaction: '0xf869808504e3b29200831e848094f0109fc8df283027b6285cc889f5aa624eac1f55843b9aca008025a0c9cf86333bcb065d140032ecaab5d9281bde80f21b9687b3e94161de42d51895a0727a108a0b8d101465414033c3f705a9c7b826e596766046ee1183dbc8aeaa68'
 // }
 
-const privateKey = ethUtil.sha3('cow'); // needs to be unique
-const address = ethUtil.privateToAddress(privateKey);
-const sig = ethUtil.ecsign(signHash(), privateKey);
+//const privateKey = ethUtil.sha3('cow'); // needs to be unique
+//const address = ethUtil.privateToAddress(privateKey);
+//const sig = ethUtil.ecsign(signHash(), privateKey);
 
 // store sig and bet object together
 
