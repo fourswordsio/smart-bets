@@ -1,5 +1,5 @@
-let Contract = artifacts.require('./Requester.sol');
-
+var Contract = artifacts.require('Requester');
+console.log(Contract.abi)
 contract('Contract', accounts => {
     Contract.deployed().then(instance => {
 

@@ -31,15 +31,70 @@ function initBetting() {
     console.log(usr1);
 }
 
-var jsonFile = "../build/contracts/Requester.json";
-var parsed = JSON.parse(fs.readFileSync(jsonFile));
-var abi = parsed.abi
+// var jsonFile = "../build/contracts/Requester.json";
+// var parsed = JSON.parse(fs.readFileSync(jsonFile));
+var abi = [ { constant: false,
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function' },
+  { constant: true,
+    inputs: [],
+    name: 'owner',
+    outputs: [ [Object] ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function' },
+  { constant: false,
+    inputs: [ [Object] ],
+    name: 'transferOwnership',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function' },
+  { inputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'constructor' },
+  { anonymous: false,
+    inputs: [ [Object], [Object] ],
+    name: 'RequestFulfilled',
+    type: 'event' },
+  { anonymous: false,
+    inputs: [ [Object] ],
+    name: 'OwnershipRenounced',
+    type: 'event' },
+  { anonymous: false,
+    inputs: [ [Object], [Object] ],
+    name: 'OwnershipTransferred',
+    type: 'event' },
+  { anonymous: false,
+    inputs: [ [Object] ],
+    name: 'ChainlinkRequested',
+    type: 'event' },
+  { anonymous: false,
+    inputs: [ [Object] ],
+    name: 'ChainlinkFulfilled',
+    type: 'event' },
+  { anonymous: false,
+    inputs: [ [Object] ],
+    name: 'ChainlinkCancelled',
+    type: 'event' },
+  { constant: false,
+    inputs: [ [Object], [Object], [Object] ],
+    name: 'lastEthPrice',
+    outputs: [ [Object] ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function' } ]
 
  var SmartBetContract = web3.eth.contract(abi);
-//
-// var SmartBet = SmartBetContract.at('PASTE CONTRACT ADDRESS HERE');
-// console.log(SmartBet);
-//
+ console.log(SmartBetContract);
+ var SmartBet = SmartBetContract.at(0x0c93E38613aA69a4fCc3F2EfceCEF30342ea944d);
+ console.log(SmartBet);
+
 // Coursetro.getInstructor(function(error, result){
 //  if(!error)
 //      {
