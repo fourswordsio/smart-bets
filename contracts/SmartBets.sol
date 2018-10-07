@@ -1024,7 +1024,7 @@ contract SmartBets {
 contract Requester is SmartBets, Chainlinked, Ownable {
 
   address constant ROPSTEN_LINK_ADDRESS = 0x20fE562d797A42Dcb3399062AE9546cd06f63280;
-  address constant ROPSTEN_ORACLE_ADDRESS = 0x261a3f70acdc85cfc2ffc8bade43b1d42bf75d69; // this one has our specID
+  address constant ROPSTEN_ORACLE_ADDRESS = 0x261a3F70acdC85CfC2FFc8badE43b1D42bf75D69; // this one has our specID
   bytes32 constant DELAYED_PRICE_ID = bytes32("dc56d871480a4787bb076917ceda0699");
 
   IConsumer internal con;
@@ -1074,12 +1074,10 @@ interface IConsumer{
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-contract SmartBets {
- 
-}
+
 
 contract Consumer is Ownable {
-  address constant ROPSTEN_ORACLE_ADDRESS = 0x261a3f70acdc85cfc2ffc8bade43b1d42bf75d69;
+  address constant ROPSTEN_ORACLE_ADDRESS = 0x261a3F70acdC85CfC2FFc8badE43b1D42bf75D69;
 
   // Store bets
   uint256 public lastPrice;

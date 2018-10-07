@@ -1,4 +1,5 @@
 
+
 function init() {
   // We init web3 so we have access to the blockchain
   initWeb3();
@@ -30,8 +31,11 @@ function initBetting() {
     console.log(usr1);
 }
 
+var jsonFile = "../build/contracts/Requester.json";
+var parsed = JSON.parse(fs.readFileSync(jsonFile));
+var abi = parsed.abi
 
-// var SmartBetContract = web3.eth.contract(YOUR ABI);
+ var SmartBetContract = web3.eth.contract(abi);
 //
 // var SmartBet = SmartBetContract.at('PASTE CONTRACT ADDRESS HERE');
 // console.log(SmartBet);

@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
-contract Bet {
-    
+contract BetContract {
+
     struct EIP712Domain {
         string  name;
         string  version;
@@ -10,7 +10,7 @@ contract Bet {
     }
 
     struct Oracle {
-        address contractAddress; 
+        address contractAddress;
         uint32 executionTime;
     }
 
@@ -45,7 +45,7 @@ contract Bet {
         "string betId",
         "address makerAddress",
         "address takerAddress",
-        "uint32 amount,"
+        "uint32 amount",
         "uint32 expirationTime",
         "Oracle oracleSpec",
         ")",
@@ -79,7 +79,7 @@ contract Bet {
         return keccak256(abi.encode(
             ORACLE_TYPEHASH,
             oracle.contractAddress,
-            uint32 executionTime
+            oracle.executionTime
         ));
     }
 
@@ -89,8 +89,8 @@ contract Bet {
             keccak256(bytes(bet.betId)),
             bet.makerAddress,
             bet.takerAddress,
-            uint32 amount,
-            uint32 expirationTime,
+            bet.amount,
+            bet.expirationTime,
             hash(bet.oracleSpec)
         ));
     }
@@ -104,7 +104,7 @@ contract Bet {
         ));
         return ecrecover(digest, v, r, s) == bet.makerAddress;
     }
-    
+
     function test() public view returns (bool) {
         // Example signed message
         Bet memory bet = Bet({
@@ -121,11 +121,11 @@ contract Bet {
         uint8 v = 28;
         bytes32 r = 0x4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d;
         bytes32 s = 0x07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b91562;
-        
+
         // My (all values below) will be different
         assert(DOMAIN_SEPARATOR == 0xf2cee375fa42b42143804025fc449deafd50cc031ca257e0b194a650a912090f);
-        assert(hash(mail) == 0xc52c0ee5d84264471806290a3f2c4cecfc5490626bf912d01f240d7a274b371e);
-        assert(verify(mail, v, r, s));
+        /* assert(hash(mail) == 0xc52c0ee5d84264471806290a3f2c4cecfc5490626bf912d01f240d7a274b371e); */
+        /* assert(verify(mail, v, r, s)); */
         return true;
     }
 }

@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/chdwlch/smart-bets/issues"
   },
-  "homepage": "https://github.com/chdwlch/smart-bets#readme"
+  "homepage": "https://github.com/chdwlch/smart-bets#readme",
+  "dependencies": {
+    "fs": "0.0.1-security"
+  }
 }
