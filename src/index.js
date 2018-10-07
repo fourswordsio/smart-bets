@@ -130,15 +130,16 @@ function initWeb3() {
                             if (err) console.error(err);
                             console.log(res);
                         });
-        console.log(makerSig);
+        console.log("makersig", makerSig);
 
-        if (taker !== 'undefined') {
+        if (taker !== "") {
+            console.log(taker);
             hash = web3.sha3("0x_I_am_taker_to_sign");
             const takerSig =  web3.personal.sign(hash, taker, function(err, res) {
-                                if (err) console.error(err);
-                                console.log(res);
+                                if (err) console.error("takerSig err", err);
+                                console.log("taker sig res", res);
                             });
-            console.log(takerSig);
+            console.log("taker sig", takerSig);
         }
 
 
@@ -185,7 +186,7 @@ function initWeb3() {
      //   }
 } // init betting
 
-var CONTRACT_ADDRESS = 0xE77B5def34679066d1173766c84B0006c9A5DC20;
+var CONTRACT_ADDRESS = 0xf8fd400cefcf36ad40be565ea83e2eeb990c48f7;
 function takerSignAndSend(){
     var betId = document.getElementById("t_betId").value;
     var taker = document.getElementById("t_taker").value;
@@ -197,20 +198,21 @@ function takerSignAndSend(){
     // taker sign and send
     hash = web3.sha3("0x_I_am_taker_to_sign");
     const takerSig =  web3.personal.sign(hash, taker, function(err, res) {
-                        if (err) console.error(err);
-                        console.log(res);
+                        if (err) console.error("sig err", err);
+                        console.log("sig res", res);
                         SendTransaction(taker, CONTRACT_ADDRESS, betAmount);
                     });
     console.log(takerSig);
 }
 
-function SendTransaction(maker, CONTRACT_ADDRESS, etherAmount){
-   web3.eth.sendTransaction({from: maker,to: taker, value:web3.toWei(etherAmount, "ether")},
+function SendTransaction(from, CONTRACT_ADDRESS, etherAmount){
+   web3.eth.sendTransaction({from: from,to: CONTRACT_ADDRESS, value:web3.toWei(etherAmount, "ether")},
    function(error, result){
       if(!error)
-          console.log(JSON.stringify(result));
+          console.log("no error:",JSON.stringify(result));
       else
-          console.error(error);
+          console.error("caught error", error);
+    console.log("result", result);
   });
 }
  // SmartBet.methods["lastEthPrice"]
