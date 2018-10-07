@@ -1,4 +1,4 @@
-var ethUtils = require('ethereumjs-util');
+var ethUtil = require('ethereumjs-util');
 
 
 const typedData = {
