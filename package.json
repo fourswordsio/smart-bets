@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/chdwlch/smart-bets#readme",
   "dependencies": {
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "truffle": "^4.1.14"
   }
 }
