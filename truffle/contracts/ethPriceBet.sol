@@ -534,7 +534,7 @@ library linkSafeMath {
 
 /**
  * @title Basic token
- * @dev Basic version of StandardToken, with no allowances.
+ * @dev Basic version of StandardToken, with no allowances. 
  */
 contract linkBasicToken is linkERC20Basic {
   using linkSafeMath for uint256;
@@ -555,7 +555,7 @@ contract linkBasicToken is linkERC20Basic {
 
   /**
   * @dev Gets the balance of the specified address.
-  * @param _owner The address to query the the balance of.
+  * @param _owner The address to query the the balance of. 
   * @return An uint256 representing the amount owned by the passed address.
   */
   function balanceOf(address _owner) constant returns (uint256 balance) {
@@ -617,21 +617,21 @@ contract linkStandardToken is linkERC20, linkBasicToken {
   function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
     return allowed[_owner][_spender];
   }
-
+  
     /*
    * approve should be called when allowed[_spender] == 0. To increment
-   * allowed value is better to use this function to avoid 2 calls (and wait until
+   * allowed value is better to use this function to avoid 2 calls (and wait until 
    * the first transaction is mined)
    * From MonolithDAO Token.sol
    */
-  function increaseApproval (address _spender, uint _addedValue)
+  function increaseApproval (address _spender, uint _addedValue) 
     returns (bool success) {
     allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);
     Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
     return true;
   }
 
-  function decreaseApproval (address _spender, uint _subtractedValue)
+  function decreaseApproval (address _spender, uint _subtractedValue) 
     returns (bool success) {
     uint oldValue = allowed[msg.sender][_spender];
     if (_subtractedValue > oldValue) {
@@ -1011,119 +1011,121 @@ contract Chainlinked {
   }
 }
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 contract SmartBets {
+  address internal mainContractAddr;
+
+  event MainContractUpdated(
+    address indexed previousMainContractAddr,
+    address indexed newMainContractAddr
+  );
+
+  function setMainContractAddr(address _mainContractAddr) internal {
+    mainContractAddr = _mainContractAddr;
+  }
+
+  modifier onlyMainContract() {
+    require( msg.sender == mainContractAddr, "Sender not authorized.");
+    _;
+  }
+
   modifier validExecutionTime(uint32 _delayTime) {
-    require( _delayTime < 5 minutes); // TODO: Set to longer time
+    require( _delayTime < 5 minutes); // Set to longer time
     _;
   }
 }
 
-contract Requester is SmartBets, Chainlinked, Ownable {
+contract tempMainContract {
+  uint256 public currentPrice;
+
+  function oracleResponse(bytes32 _requestId, uint256 _price)
+    public
+    //checkChainlinkFulfillment(_requestId)
+    // This is checking against tempMainContract's own unfulfilledRequests store. Need
+    // to compare against BetEthPrice's unfulfilledRequests
+  {
+    currentPrice = _price;
+  }
+
+  /*function oracleResponse(bytes32 _requestId, uint256 _price, bytes32 _betId)
+    public
+    validateAddress(_betId)
+  {
+
+  }
+
+  modifier validateAddress(_betId) {
+    require( msg.sender == bets[bet_Id].oracleAddress); // Set to longer time
+    _;
+  }
+*/
+}
+
+contract BetEthPrice is SmartBets, Chainlinked, Ownable {
+  uint256 public currentPrice;
+  bytes32 public betId;
 
   address constant ROPSTEN_LINK_ADDRESS = 0x20fE562d797A42Dcb3399062AE9546cd06f63280;
-  address constant ROPSTEN_ORACLE_ADDRESS = 0x261a3f70acdc85cfc2ffc8bade43b1d42bf75d69; // this one has our specID
+  address constant ROPSTEN_ORACLE_ADDRESS = 0x261a3f70acdc85cfc2ffc8bade43b1d42bf75d69;
+  address constant MAIN_CONTRACT_ADDRESS = 0x961a3f70acdc85cfc2ffc8bade43b1d42bf75d69;
+
   bytes32 constant DELAYED_PRICE_ID = bytes32("dc56d871480a4787bb076917ceda0699");
 
-  IConsumer internal con;
-
-  event RequestFulfilled(
+  event RequestEthereumPriceFulfilled(
     bytes32 indexed requestId,
     uint256 indexed price
   );
 
   constructor() Ownable() public {
     setLinkToken(ROPSTEN_LINK_ADDRESS);
-    setOracle(ROPSTEN_ORACLE_ADDRESS);
+    setOracle(ROPSTEN_ORACLE_ADDRESS); // FUTURE: Dynamically set num oracles based on bet total
+    setMainContractAddr(MAIN_CONTRACT_ADDRESS);
   }
 
-  function lastEthPrice(string _callback, address _caller, uint32 _delay)
+  // Generic function name? Would that make interface more standard?
+  function requestEthereumPrice(string _currency, uint32 _delayTime, address tempMainContractAddr) 
     public
-    validExecutionTime(_delay)
-    returns(bytes32)
+    //onlyMainContract // Need to make it so only our MAIN contract can call this function
+    validExecutionTime(_delayTime)
   {
-    ChainlinkLib.Run memory run = newRun(DELAYED_PRICE_ID, _caller, _callback);
-
-    run.add("url", "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD");
+    ChainlinkLib.Run memory run = newRun(DELAYED_PRICE_ID, this, "fulfillEthereumPrice(bytes32,uint256,bytes32)");
+    //ChainlinkLib.Run memory run = newRun(DELAYED_PRICE_ID, tempMainContractAddr, "oracleResponse(bytes32,uint256)");
+    run.add("url", "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,JPY");
     string[] memory path = new string[](1);
-    path[0] = "USD";
+    path[0] = _currency;
     run.addStringArray("path", path);
-
     run.addInt("times", 100);
-    run.addUint("until", now + _delay);
-    con = IConsumer(_caller);
-    con.updateRequestId(chainlinkRequest(run, LINK(1)));
+    run.addUint("until", now + _delayTime);
+    chainlinkRequest(run, LINK(1));
   }
 
-  modifier onlyLINK() {
-    require(msg.sender == ROPSTEN_LINK_ADDRESS, "Must use LINK token");
-    _;
-  }
-}
-
-interface IConsumer{
-  function updateRequestId(bytes32) external;
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Consumer could be any bet type we would want to allow
-// Bet type parameters still need to be specified in requester contract.
-// This would make it so we can choose which bets are allowed
-contract Consumer is Ownable {
-  address constant ROPSTEN_ORACLE_ADDRESS = 0x261a3f70acdc85cfc2ffc8bade43b1d42bf75d69;
-
-  // Store bets
-  uint256 public lastPrice;
-  uint256 public lastPriceTimestamp;
-
-  mapping(bytes32 => bool) internal unfulfilledRequests; // Convert into live bets?
-
-  Requester internal requester; // TODO: Replace this with address and abi calls
-  address internal oracle;
-  LinkToken internal link;
-
-  constructor(address _requester) public Ownable() {
-    oracle = ROPSTEN_ORACLE_ADDRESS;
-    requester = Requester(_requester);
-  }
-
-  event RequestFulfilled(
-    bytes32 requestId,
-    uint256 price
-  );
-
-  function requestLastCryptoPrice(uint32 _delay) public {
-    requester.lastEthPrice("fulfillLastPrice(bytes32,uint256)", address(this), _delay);
-  }
-
-  function updateRequestId(bytes32 _requestId) external onlyRequester {
-    unfulfilledRequests[_requestId] = true;
-  }
-
-  function fulfillLastPrice(bytes32 _requestId, uint256 _price)
+  function fulfillEthereumPrice(bytes32 _requestId, uint256 _price, bytes32 _betId)
     public
     checkChainlinkFulfillment(_requestId)
   {
-    emit RequestFulfilled(_requestId, _price);
-    lastPriceTimestamp = now;
-    lastPrice = _price;
+    emit RequestEthereumPriceFulfilled(_requestId, _price);
+    //currentPrice = _price;
+    // Send result to mainContractAddr??
+    //tempMainContract main = tempMainContract(mainContractAddr);
+    //main.betTypeA(3);
+    betId = _betId;
   }
 
+  // Allow owner to withdraw link from the contract
   function withdrawLink() public onlyOwner {
-    require(link.transfer(owner, link.balanceOf(address(this))));
+    LinkToken link = LinkToken(chainlinkToken());
+    require(link.transfer(msg.sender, link.balanceOf(address(this))), "Unable to transfer");
   }
 
-  modifier checkChainlinkFulfillment(bytes32 _requestId) {
-    require(msg.sender == oracle && unfulfilledRequests[_requestId], "Source must be the oracle of the request");
-    _;
-    unfulfilledRequests[_requestId] = false;
+  // Only allow the contract owner to change the main contract address pointer
+  function updateMainContractAddr(address newMainContractAddr) public onlyOwner {
+    _updateMainContractAddr(newMainContractAddr);
   }
 
-  modifier onlyRequester() {
-    require(msg.sender == address(requester), "Only the requester can run this function");
-    _;
+  // Allow us to point to a new main contract address in the case of updates
+  function _updateMainContractAddr(address newMainContractAddr) internal {
+    require(newMainContractAddr != address(0));
+    emit MainContractUpdated(mainContractAddr, newMainContractAddr);
+    setMainContractAddr(newMainContractAddr);
   }
 }

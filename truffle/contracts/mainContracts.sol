@@ -534,7 +534,7 @@ library linkSafeMath {
 
 /**
  * @title Basic token
- * @dev Basic version of StandardToken, with no allowances.
+ * @dev Basic version of StandardToken, with no allowances. 
  */
 contract linkBasicToken is linkERC20Basic {
   using linkSafeMath for uint256;
@@ -555,7 +555,7 @@ contract linkBasicToken is linkERC20Basic {
 
   /**
   * @dev Gets the balance of the specified address.
-  * @param _owner The address to query the the balance of.
+  * @param _owner The address to query the the balance of. 
   * @return An uint256 representing the amount owned by the passed address.
   */
   function balanceOf(address _owner) constant returns (uint256 balance) {
@@ -617,21 +617,21 @@ contract linkStandardToken is linkERC20, linkBasicToken {
   function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
     return allowed[_owner][_spender];
   }
-
+  
     /*
    * approve should be called when allowed[_spender] == 0. To increment
-   * allowed value is better to use this function to avoid 2 calls (and wait until
+   * allowed value is better to use this function to avoid 2 calls (and wait until 
    * the first transaction is mined)
    * From MonolithDAO Token.sol
    */
-  function increaseApproval (address _spender, uint _addedValue)
+  function increaseApproval (address _spender, uint _addedValue) 
     returns (bool success) {
     allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);
     Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
     return true;
   }
 
-  function decreaseApproval (address _spender, uint _subtractedValue)
+  function decreaseApproval (address _spender, uint _subtractedValue) 
     returns (bool success) {
     uint oldValue = allowed[msg.sender][_spender];
     if (_subtractedValue > oldValue) {
@@ -1039,10 +1039,10 @@ contract Requester is SmartBets, Chainlinked, Ownable {
     setOracle(ROPSTEN_ORACLE_ADDRESS);
   }
 
-  function lastEthPrice(string _callback, address _caller, uint32 _delay)
-    public
+  function lastEthPrice(string _callback, address _caller, uint32 _delay) 
+    public 
     validExecutionTime(_delay)
-    returns(bytes32)
+    returns(bytes32) 
   {
     ChainlinkLib.Run memory run = newRun(DELAYED_PRICE_ID, _caller, _callback);
 
@@ -1052,7 +1052,7 @@ contract Requester is SmartBets, Chainlinked, Ownable {
     run.addStringArray("path", path);
 
     run.addInt("times", 100);
-    run.addUint("until", now + _delay);
+    run.addUint("until", now + _delay); 
     con = IConsumer(_caller);
     con.updateRequestId(chainlinkRequest(run, LINK(1)));
   }
@@ -1084,7 +1084,7 @@ contract Consumer is Ownable {
   Requester internal requester; // TODO: Replace this with address and abi calls
   address internal oracle;
   LinkToken internal link;
-
+  
   constructor(address _requester) public Ownable() {
     oracle = ROPSTEN_ORACLE_ADDRESS;
     requester = Requester(_requester);
@@ -1094,11 +1094,11 @@ contract Consumer is Ownable {
     bytes32 requestId,
     uint256 price
   );
-
+  
   function requestLastCryptoPrice(uint32 _delay) public {
-    requester.lastEthPrice("fulfillLastPrice(bytes32,uint256)", address(this), _delay);
+    requester.lastEthPrice("fulfillLastPrice(bytes32,uint256)", address(this), uint32 _delay);
   }
-
+  
   function updateRequestId(bytes32 _requestId) external onlyRequester {
     unfulfilledRequests[_requestId] = true;
   }
@@ -1115,13 +1115,13 @@ contract Consumer is Ownable {
   function withdrawLink() public onlyOwner {
     require(link.transfer(owner, link.balanceOf(address(this))));
   }
-
+  
   modifier checkChainlinkFulfillment(bytes32 _requestId) {
     require(msg.sender == oracle && unfulfilledRequests[_requestId], "Source must be the oracle of the request");
     _;
     unfulfilledRequests[_requestId] = false;
   }
-
+  
   modifier onlyRequester() {
     require(msg.sender == address(requester), "Only the requester can run this function");
     _;

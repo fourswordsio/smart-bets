@@ -534,7 +534,7 @@ library linkSafeMath {
 
 /**
  * @title Basic token
- * @dev Basic version of StandardToken, with no allowances.
+ * @dev Basic version of StandardToken, with no allowances. 
  */
 contract linkBasicToken is linkERC20Basic {
   using linkSafeMath for uint256;
@@ -555,7 +555,7 @@ contract linkBasicToken is linkERC20Basic {
 
   /**
   * @dev Gets the balance of the specified address.
-  * @param _owner The address to query the the balance of.
+  * @param _owner The address to query the the balance of. 
   * @return An uint256 representing the amount owned by the passed address.
   */
   function balanceOf(address _owner) constant returns (uint256 balance) {
@@ -617,21 +617,21 @@ contract linkStandardToken is linkERC20, linkBasicToken {
   function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
     return allowed[_owner][_spender];
   }
-
+  
     /*
    * approve should be called when allowed[_spender] == 0. To increment
-   * allowed value is better to use this function to avoid 2 calls (and wait until
+   * allowed value is better to use this function to avoid 2 calls (and wait until 
    * the first transaction is mined)
    * From MonolithDAO Token.sol
    */
-  function increaseApproval (address _spender, uint _addedValue)
+  function increaseApproval (address _spender, uint _addedValue) 
     returns (bool success) {
     allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);
     Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
     return true;
   }
 
-  function decreaseApproval (address _spender, uint _subtractedValue)
+  function decreaseApproval (address _spender, uint _subtractedValue) 
     returns (bool success) {
     uint oldValue = allowed[msg.sender][_spender];
     if (_subtractedValue > oldValue) {
@@ -1014,20 +1014,17 @@ contract Chainlinked {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-contract SmartBets {
-  modifier validExecutionTime(uint32 _delayTime) {
-    require( _delayTime < 5 minutes); // TODO: Set to longer time
-    _;
-  }
-}
-
-contract Requester is SmartBets, Chainlinked, Ownable {
+contract Requester is Chainlinked, Ownable {
 
   address constant ROPSTEN_LINK_ADDRESS = 0x20fE562d797A42Dcb3399062AE9546cd06f63280;
+  //address constant ROPSTEN_ORACLE_ADDRESS = 0xcec1b9Cf49d76ABf21206bDa4b2055bA149b28E6;
   address constant ROPSTEN_ORACLE_ADDRESS = 0x261a3f70acdc85cfc2ffc8bade43b1d42bf75d69; // this one has our specID
   bytes32 constant DELAYED_PRICE_ID = bytes32("dc56d871480a4787bb076917ceda0699");
 
   IConsumer internal con;
+  
+  uint256 private currentAmount;
+  address private currentSender;
 
   event RequestFulfilled(
     bytes32 indexed requestId,
@@ -1039,32 +1036,72 @@ contract Requester is SmartBets, Chainlinked, Ownable {
     setOracle(ROPSTEN_ORACLE_ADDRESS);
   }
 
-  function lastEthPrice(string _callback, address _caller, uint32 _delay)
+  function onTokenTransfer(
+    address _sender,
+    uint256 _wei,
+    bytes _data
+  )
     public
-    validExecutionTime(_delay)
-    returns(bytes32)
+    onlyLINK
+    isContract(_sender)
   {
-    ChainlinkLib.Run memory run = newRun(DELAYED_PRICE_ID, _caller, _callback);
+    require(_data.length > 0, "tokenTransfer requires abi bytes");
+    currentAmount = _wei;
+    currentSender = _sender;
+    require(address(this).delegatecall(_data), "onTokenTransfer failing");
+  }
+
+  // TODO: Update this to use "run" and our delay spec
+  /*function lastEthPrice(bytes32 _betId, string _callback) public returns(bytes32,bytes32) {
+    string[] memory tasks = new string[](5);
+    tasks[0] = "httpget";
+    tasks[1] = "jsonparse";
+    tasks[2] = "multiply";
+    tasks[3] = "ethuint256";
+    tasks[4] = "ethtx";
+
+    ChainlinkLib.Spec memory spec = newSpec(tasks, currentSender, _callback);
+    spec.add("url", "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD");
+    string[] memory path = new string[](1);
+    path[0] = "USD";
+    spec.addStringArray("path", path);
+    spec.addInt("times", 100);
+    con = IConsumer(currentSender);
+    con.updateRequestId(chainlinkRequest(spec, currentAmount), _betId);
+  }*/
+
+  // Updated to use "run" and prebuilt specID
+  function lastEthPrice(bytes32 _betId, string _callback) public returns(bytes32,bytes32) {
+    ChainlinkLib.Run memory run = newRun(DELAYED_PRICE_ID, currentSender, _callback);
 
     run.add("url", "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD");
     string[] memory path = new string[](1);
     path[0] = "USD";
     run.addStringArray("path", path);
 
-    run.addInt("times", 100);
-    run.addUint("until", now + _delay);
-    con = IConsumer(_caller);
-    con.updateRequestId(chainlinkRequest(run, LINK(1)));
+    //run.addUint("until", now + _delayTime);   
+    run.addUint("until", now + 15); // TODO: Pass delayTime as param
+    con = IConsumer(currentSender);
+    con.updateRequestId(chainlinkRequest(run, currentAmount), _betId);
+  }
+
+  modifier isContract(address _addr) {
+    uint length;
+    assembly { length := extcodesize(_addr) }
+    require(length > 0, "must be a contract");
+    _;
   }
 
   modifier onlyLINK() {
-    require(msg.sender == ROPSTEN_LINK_ADDRESS, "Must use LINK token");
+    //require(msg.sender == address(link));
+    require(msg.sender == 0x20fE562d797A42Dcb3399062AE9546cd06f63280, "Must use LINK token");
+    //require(msg.sender == address(LINK), "Must use LINK token");
     _;
   }
 }
 
 interface IConsumer{
-  function updateRequestId(bytes32) external;
+  function updateRequestId(bytes32, bytes32) external;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1073,34 +1110,62 @@ interface IConsumer{
 // Bet type parameters still need to be specified in requester contract.
 // This would make it so we can choose which bets are allowed
 contract Consumer is Ownable {
-  address constant ROPSTEN_ORACLE_ADDRESS = 0x261a3f70acdc85cfc2ffc8bade43b1d42bf75d69;
+
+  address constant ROPSTEN_LINK_ADDRESS = 0x20fE562d797A42Dcb3399062AE9546cd06f63280;
+  address constant ROPSTEN_ORACLE_ADDRESS = 0xcec1b9Cf49d76ABf21206bDa4b2055bA149b28E6;
+  bytes32 constant byteText = "twochains"; 
+  //string public converted; 
+  bytes32 public returnedBetId;
+
+  uint256 constant private linkDivisibility = 10**18;
 
   // Store bets
   uint256 public lastPrice;
   uint256 public lastPriceTimestamp;
 
-  mapping(bytes32 => bool) internal unfulfilledRequests; // Convert into live bets?
+  mapping(bytes32 => bool) internal unfulfilledRequests;
+  
+  bytes4 constant LAST_PRICE_FID = bytes4(keccak256("lastEthPrice(string)"));
 
-  Requester internal requester; // TODO: Replace this with address and abi calls
+  address internal requester;
   address internal oracle;
+  //ILinkToken internal link;
   LinkToken internal link;
 
+  struct Request {
+    bytes4 fid;
+    bytes32 betId;
+    string callback;
+  }
+  
   constructor(address _requester) public Ownable() {
     oracle = ROPSTEN_ORACLE_ADDRESS;
-    requester = Requester(_requester);
+    //link = ILinkToken(ROPSTEN_LINK_ADDRESS);
+    link =  LinkToken(ROPSTEN_LINK_ADDRESS);
+    requester = _requester;
   }
 
   event RequestFulfilled(
     bytes32 requestId,
     uint256 price
   );
-
-  function requestLastCryptoPrice(uint32 _delay) public {
-    requester.lastEthPrice("fulfillLastPrice(bytes32,uint256)", address(this), _delay);
+  
+  function requestLastCryptoPrice() public {
+    Request memory self;
+    self.fid = LAST_PRICE_FID;
+    self.betId = byteText;
+    self.callback = "fulfillLastPrice(bytes32,uint256)";
+    //require(link.transferAndCall(requester, linkDivisibility, encodeData(self)));
+    require(link.transferAndCall(requester, 1, encodeData(self)), "Failing to request last crypto price");
+  }
+  
+  function encodeData(Request req) internal pure returns (bytes data) {
+    return abi.encodeWithSelector(req.fid, req.callback, req.betId);
   }
 
-  function updateRequestId(bytes32 _requestId) external onlyRequester {
+  function updateRequestId(bytes32 _requestId, bytes32 _betId) external onlyRequester {
     unfulfilledRequests[_requestId] = true;
+    returnedBetId = _betId;
   }
 
   function fulfillLastPrice(bytes32 _requestId, uint256 _price)
@@ -1115,15 +1180,22 @@ contract Consumer is Ownable {
   function withdrawLink() public onlyOwner {
     require(link.transfer(owner, link.balanceOf(address(this))));
   }
-
+  
   modifier checkChainlinkFulfillment(bytes32 _requestId) {
     require(msg.sender == oracle && unfulfilledRequests[_requestId], "Source must be the oracle of the request");
     _;
     unfulfilledRequests[_requestId] = false;
+    //delete unfulfilledRequests[_requestId];
   }
-
+  
   modifier onlyRequester() {
-    require(msg.sender == address(requester), "Only the requester can run this function");
+    require(msg.sender == requester, "Only the requester can run this function");
     _;
   }
+}
+
+interface ILinkToken{
+  function transferAndCall(address, uint, bytes) external returns (bool);
+  function transfer(address, uint) external returns (bool);
+  function balanceOf(address) external view returns (uint256);
 }
