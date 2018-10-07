@@ -1061,6 +1061,11 @@ contract Requester is SmartBets, Chainlinked, Ownable {
     require(msg.sender == ROPSTEN_LINK_ADDRESS, "Must use LINK token");
     _;
   }
+
+  modifier validExecutionTime(uint32 _delayTime) {
+    require( _delayTime < 5 minutes); // TODO: Set to longer time
+    _;
+  }
 }
 
 interface IConsumer{
@@ -1069,9 +1074,10 @@ interface IConsumer{
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Consumer could be any bet type we would want to allow
-// Bet type parameters still need to be specified in requester contract.
-// This would make it so we can choose which bets are allowed
+contract SmartBets {
+ 
+}
+
 contract Consumer is Ownable {
   address constant ROPSTEN_ORACLE_ADDRESS = 0x261a3f70acdc85cfc2ffc8bade43b1d42bf75d69;
 
