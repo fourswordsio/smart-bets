@@ -32,12 +32,13 @@ contract EthPriceConsumer is SmartBet, Ownable {
 
   // All entry points to consumer: startBet. TODO: Make this a template?
   // Can have a contract in front of this to swap context from relayer to taker
-  function startBet(Bet memory _bet, address _takerAddress, bytes _signature) public {
-    assertStartableBet(_bet, _takerAddress, _signature);
+  /* function startBet(Bet memory _bet, address _takerAddress, bytes _signature) public { */
+  function startBet(Bet memory _bet, address _takerAddress) public {
+    //assertStartableBet(_bet, _takerAddress, _signature);
 
     requester.lastEthPrice(
-      "fulfillLastPrice(bytes32,uint256)", 
-      address(this), 
+      "fulfillLastPrice(bytes32,uint256)",
+      address(this),
       delay(_bet.oracleSpec.executionTime),
       hash(_bet)
     );
@@ -46,8 +47,8 @@ contract EthPriceConsumer is SmartBet, Ownable {
 /* Can't run manually anymore because we added the bytes32 4th param
   function startBet(uint256 _delay) public {
     requester.lastEthPrice(
-      "fulfillLastPrice(bytes32,uint256)", 
-      address(this), 
+      "fulfillLastPrice(bytes32,uint256)",
+      address(this),
       _delay
     );
   }*/
