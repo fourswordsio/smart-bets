@@ -26,15 +26,15 @@
                     <!-- <label class="control-label">Taker</label> -->
                     <input id="taker" type="text" placeholder="taker">
                     <!-- <label class="control-label">Bet Amount</label> -->
-                    <input id="betAmount" type="text" placeholder="betAmount">
+                    <input id="betAmount" type="text" placeholder="betAmount" value="5">
                     <!-- <label class="control-label">Expiration</label> -->
-                    <input id="expiry" type="text" placeholder="Expiration">
+                    <input id="expiry" type="text" placeholder="Expiration" value="5">
                     <!-- <label class="control-label">Bet Type (address)</label> -->
-                    <input id="betType" type="text" placeholder="betType">
+                    <input id="betType" type="text" placeholder="betType" value="NONE">
                     <!-- <label class="control-label">Settlement Type ()</label> -->
-                    <input id="settlementType" type="text" placeholder="settlementType">
+                    <input id="settlementType" type="text" placeholder="settlementType" value="NONE">
 
-                    <a href="#" class="btn btn-primary">Create Bet</a>
+                    <a href="#" class="btn btn-primary" onclick="init()">Create Bet</a>
                 </div>
             </div>
 
@@ -42,10 +42,11 @@
 
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="index.js"></script>
+    <script src="truffle-contract.js"></script>
 
 </body>
 </html>
