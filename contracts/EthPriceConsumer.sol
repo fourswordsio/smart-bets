@@ -14,7 +14,7 @@ contract EthPriceConsumer is SmartBet, Ownable {
   uint256 public lastPrice;
   uint256 public lastPriceTimestamp;
 
-  mapping(bytes32 => bool) internal unfulfilledRequests; // Convert into live bets?
+  mapping(bytes32 => bytes32) public liveBets; // Convert into live bets?
 
   Requester internal requester; // TODO: Replace this with address and abi calls
   address internal oracle;
@@ -32,26 +32,28 @@ contract EthPriceConsumer is SmartBet, Ownable {
 
   // All entry points to consumer: startBet. TODO: Make this a template?
   // Can have a contract in front of this to swap context from relayer to taker
-  function startBetRelayer(Bet memory _bet, address _takerAddress, bytes _signature) public {
+  function startBet(Bet memory _bet, address _takerAddress, bytes _signature) public {
     assertStartableBet(_bet, _takerAddress, _signature);
 
     requester.lastEthPrice(
       "fulfillLastPrice(bytes32,uint256)", 
       address(this), 
-      delay(_bet.oracleSpec.executionTime)
+      delay(_bet.oracleSpec.executionTime),
+      hash(_bet)
     );
   }
 
+/* Can't run manually anymore because we added the bytes32 4th param
   function startBet(uint256 _delay) public {
     requester.lastEthPrice(
       "fulfillLastPrice(bytes32,uint256)", 
       address(this), 
       _delay
     );
-  }
+  }*/
 
-  function updateRequestId(bytes32 _requestId) external onlyRequester {
-    unfulfilledRequests[_requestId] = true;
+  function updateRequestId(bytes32 _requestId, bytes32 _betId) external onlyRequester {
+    liveBets[_requestId] = _betId;
   }
 
   function fulfillLastPrice(bytes32 _requestId, uint256 _price)
@@ -68,9 +70,9 @@ contract EthPriceConsumer is SmartBet, Ownable {
   }
 
   modifier checkChainlinkFulfillment(bytes32 _requestId) {
-    require(msg.sender == oracle && unfulfilledRequests[_requestId], "Source must be the oracle of the request");
+    require(msg.sender == oracle && liveBets[_requestId] != 0, "Source must be the oracle of the request");
     _;
-    unfulfilledRequests[_requestId] = false;
+    delete liveBets[_requestId]; // TODO: bet settlement
   }
 
   modifier onlyRequester() {

@@ -20,7 +20,7 @@ contract Requester is Chainlinked, Ownable {
     setOracle(ROPSTEN_ORACLE_ADDRESS);
   }
 
-  function lastEthPrice(string _callback, address _caller, uint256 _delay)
+  function lastEthPrice(string _callback, address _caller, uint256 _delay, bytes32 betId)
     public
     validExecutionTime(_delay)
     returns(bytes32)
@@ -35,7 +35,7 @@ contract Requester is Chainlinked, Ownable {
     run.addInt("times", 100);
     run.addUint("until", now + _delay);
     con = IConsumer(_caller);
-    con.updateRequestId(chainlinkRequest(run, LINK(1)));
+    con.updateRequestId(chainlinkRequest(run, LINK(1)), betId);
   }
 
   modifier onlyLINK() {
@@ -50,5 +50,5 @@ contract Requester is Chainlinked, Ownable {
 }
 
 interface IConsumer{
-  function updateRequestId(bytes32) external;
+  function updateRequestId(bytes32, bytes32) external;
 }
