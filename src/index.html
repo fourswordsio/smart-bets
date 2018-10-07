@@ -13,33 +13,58 @@
 <body>
     <div class="container">
 
-        <h1>bet? BET</h1>
-        <div class="col-md-6 center-block">
+        <h1 align="center">Smart BET</h1>
+        <hr>
 
-            <div class="card">
-                <h5 class="card-header">Parameters</h5>
-                <div class="card-body">
-
-                    <!-- <label class="control-label">Creator</label> -->
-                    <input id="creator" type="text" placeholder="creator">
-                    <!-- <label class="control-label">Taker</label> -->
-                    <input id="taker" type="text" placeholder="taker">
-                    <!-- <label class="control-label">Bet Amount</label> -->
-                    <input id="betAmount" type="text" placeholder="betAmount" value="5">
-                    <!-- <label class="control-label">Expiration</label> -->
-                    <input id="expiry" type="text" placeholder="Expiration" value="5">
-                    <!-- <label class="control-label">Bet Type (address)</label> -->
-                    <input id="betType" type="text" placeholder="betType" value="NONE">
-                    <!-- <label class="control-label">Settlement Type ()</label> -->
-                    <input id="settlementType" type="text" placeholder="settlementType" value="NONE">
-
-                    <a href="#" class="btn btn-primary" onclick="init()">Create Bet</a>
-                </div>
+        <div>
+            <div class="card-body" align="center">
+                <h3 class="card-header">Available Bet</h3>
+                <!-- <label class="control-label">Creator</label> -->
+                <input id="creator" type="text">
+                <!-- <label class="control-label">Taker</label> -->
+                <input id="taker" type="text">
+                <!-- <label class="control-label">Bet Amount</label> -->
             </div>
+        </div>
+        <hr>
 
+        <div class="col-md-6 ">
+            <div class="card-body">
+                <h3 class="card-header">Bet Maker</h3>
+                <!-- <label class="control-label">Creator</label> -->
+                <input id="m_creator" type="text" placeholder="Bet maker address">
+                <!-- <label class="control-label">Taker</label> -->
+                <input id="m_taker" type="text" placeholder="Bet taker address">
+                <!-- <label class="control-label">Bet Amount</label> -->
+                <input id="m_betAmount" type="text" placeholder="betAmount">
+                <!-- <label class="control-label">Expiration</label> -->
+                <input id="m_expiry" type="text" placeholder="Expiration" >
+                <!-- <label class="control-label">Bet Type (address)</label> -->
+                <input id="m_betType" type="text" placeholder="betType">
+                <!-- <label class="control-label">Settlement Type ()</label> -->
+                <input id="m_settlementType" type="text" placeholder="settlementType"><br>
+                <a href="#" class="btn btn-primary" onclick="init()">Create Bet</a>
+            </div>
         </div>
 
-    </div>
+        <div class="col-md-6 ">
+            <div class="card-body" >
+                <h3 class="card-header">Bet Taker</h3>
+                <!-- <label class="control-label">Creator</label> -->
+                <input id="t_betId" type="text" placeholder="Bet Id">
+                <!-- <label class="control-label">Taker</label> -->
+                <input id="t_taker" type="text" placeholder="Bet taker address">
+                <!-- <label class="control-label">Bet Amount</label> -->
+                <input id="t_betAmount" type="text" placeholder="betAmount">
+                <!-- <label class="control-label">Expiration</label> -->
+                <input id="t_expiry" type="text" placeholder="Expiration" >
+                <!-- <label class="control-label">Bet Type (address)</label> -->
+                <input id="t_betType" type="text" placeholder="betType">
+                <!-- <label class="control-label">Settlement Type ()</label> -->
+                <input id="t_settlementType" type="text" placeholder="settlementType"><br>
+                <a href="#" class="btn btn-primary">Take Bet</a>
+            </div>
+        </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"

@@ -29,12 +29,12 @@ function initBetting() {
     var usr1 = web3.eth.accounts[0]; // TODO: Let user pick maker/taker from the list of accounts?
 	var usr2 = web3.eth.accounts[1]; // TODO: Let user pick maker/taker from the list of accounts?
 
-    var maker = document.getElementById("creator").value;
-    var taker = document.getElementById("taker").value;
-    var betAmount = document.getElementById("betAmount").value;
-    var exp = document.getElementById("expiry").value;
-    var betType = document.getElementById("betType").value;
-    var settlementType = document.getElementById("settlementType").value;
+    var maker = document.getElementById("m_creator").value;
+    var taker = document.getElementById("m_taker").value;
+    var betAmount = document.getElementById("m_betAmount").value;
+    var exp = document.getElementById("m_expiry").value;
+    var betType = document.getElementById("m_betType").value;
+    var settlementType = document.getElementById("m_settlementType").value;
 
     $.getJSON('Requester.json', function(data) {
 
