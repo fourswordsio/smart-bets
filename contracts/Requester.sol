@@ -33,7 +33,8 @@ contract Requester is Chainlinked, Ownable {
     run.addStringArray("path", path);
 
     run.addInt("times", 100);
-    run.addUint("until", now + _delay);
+    //run.addUint("until", now + _delay); 
+    run.addUint("until", now + 15); 
     con = IConsumer(_caller);
     con.updateRequestId(chainlinkRequest(run, LINK(1)), betId);
   }

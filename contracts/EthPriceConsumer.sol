@@ -32,8 +32,9 @@ contract EthPriceConsumer is SmartBet, Ownable {
 
   // All entry points to consumer: startBet. TODO: Make this a template?
   // Can have a contract in front of this to swap context from relayer to taker
-  function startBet(Bet memory _bet, address _takerAddress, bytes _signature) public {
-    assertStartableBet(_bet, _takerAddress, _signature);
+  //function startBet(Bet memory _bet, address _takerAddress, bytes _signature) public {
+  function startBet(Bet memory _bet, address _takerAddress) public {
+   //assertStartableBet(_bet, _takerAddress, _signature);
 
     requester.lastEthPrice(
       "fulfillLastPrice(bytes32,uint256)", 
