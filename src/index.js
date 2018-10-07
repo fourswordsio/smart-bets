@@ -51,13 +51,10 @@ function initWeb3() {
 
         var requester = TruffleContract(data);
         requester.setProvider(web3Provider);
-        console.log(requester);
+        console.log("requester", requester);
 
-<<<<<<< HEAD
-=======
         var hash = web3.sha3("0x_I_am_maker_to_sign");
 
->>>>>>> 40176c35db8c2e5f530388c7cfaa4e085a9b650c
 /*
         const makerSig = new Promise(function(resolve, reject) {
             web3.personal.sign(hash, maker, function(err, res) {
@@ -90,15 +87,15 @@ function initWeb3() {
         console.log(makerSig);
 
         if (taker != "") {
-        hash = web3.sha3("0x_I_am_taker_to_sign");
-        const takerSig =  web3.personal.sign(hash, taker, function(err, res) {
-                            if (err) console.error(err);
-                            console.log(res);
-                        });
-        console.log(takerSig);
+            hash = web3.sha3("0x_I_am_taker_to_sign");
+            const takerSig =  web3.personal.sign(hash, taker, function(err, res) {
+                                if (err) console.error(err);
+                                console.log(res);
+                            });
+            console.log(takerSig);
         }
 
-        
+
         /*
         requester.deployed().then(function(instance) {
           return instance.???????({from: accounts[0]});
@@ -173,10 +170,9 @@ function initWeb3() {
         type: 'function' } ]
 
      var RequestContract = web3.eth.contract(abi);
-     console.log(RequestContract);
-     var CONTRACT_ADDRESS = 0x0c93E38613aA69a4fCc3F2EfceCEF30342ea944d;
-     var SmartBet = RequestContract.at(CONTRACT_ADDRESS);
-     console.log(SmartBet);
+     console.log("RequestContract", RequestContract);
+
+     // console.log(SmartBet);
      var contractInstance = RequestContract.new(
          {data: {
 	"linkReferences": {},
@@ -188,6 +184,10 @@ function initWeb3() {
           gas: 1000000},
           function(err, myContract){
        if(!err) {
+           console.log("myContract", myContract);
+
+           var CONTRACT_ADDRESS = 0x0c93E38613aA69a4fCc3F2EfceCEF30342ea944d;
+           var SmartBet = RequestContract.at(CONTRACT_ADDRESS);
           // NOTE: The callback will fire twice!
           // Once the contract has the transactionHash property set and once its deployed on an address.
            // e.g. check tx hash on the first call (transaction send)
@@ -205,19 +205,37 @@ function initWeb3() {
        }
  });
 
-
- web3.eth.sendTransaction({from: maker,to: taker, value:web3.toWei(0.05, "ether")},
- function(error, result){
-    if(!error)
-        console.log(JSON.stringify(result));
-    else
-        console.error(error);
-});
-
-
     // create bet
     // lastEthPrice("", maker, exp - now);
 
+} // init betting
+var CONTRACT_ADDRESS = 0x0c93E38613aA69a4fCc3F2EfceCEF30342ea944d;
+function takerSignAndSend(){
+    var betId = document.getElementById("t_betId").value;
+    var taker = document.getElementById("t_taker").value;
+    var betAmount = document.getElementById("t_betAmount").value;
+    var exp = document.getElementById("t_expiry").value;
+    var betType = document.getElementById("t_betType").value;
+    var settlementType = document.getElementById("t_settlementType").value;
+
+    // taker sign and send
+    hash = web3.sha3("0x_I_am_taker_to_sign");
+    const takerSig =  web3.personal.sign(hash, taker, function(err, res) {
+                        if (err) console.error(err);
+                        console.log(res);
+                        SendTransaction(taker, CONTRACT_ADDRESS, betAmount);
+                    });
+    console.log(takerSig);
+}
+
+function SendTransaction(maker, CONTRACT_ADDRESS, etherAmount){
+   web3.eth.sendTransaction({from: maker,to: taker, value:web3.toWei(etherAmount, "ether")},
+   function(error, result){
+      if(!error)
+          console.log(JSON.stringify(result));
+      else
+          console.error(error);
+  });
 }
  // SmartBet.methods["lastEthPrice"]
 // Coursetro.getInstructor(function(error, result){

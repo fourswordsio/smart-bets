@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-var ethUtil = require('ethereumjs-util');
-=======
 //var ethUtils = require('ethereumjs-util');
->>>>>>> 40176c35db8c2e5f530388c7cfaa4e085a9b650c
+
 
 
 const typedData = {
