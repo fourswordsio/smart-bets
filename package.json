@@ -1,0 +1,24 @@
+{
+  "scripts": {
+    "dev": "lite-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "lite-server": "^2.4.0"
+  },
+  "name": "smart-bets",
+  "description": "",
+  "version": "1.0.0",
+  "main": "truffle.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chdwlch/smart-bets.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chdwlch/smart-bets/issues"
+  },
+  "homepage": "https://github.com/chdwlch/smart-bets#readme"
+}
