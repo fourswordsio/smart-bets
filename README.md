@@ -6,9 +6,9 @@
 
 <h4 align="center">The first fully decentralized betting platform.</h4>
 <p align="center">
-  <a href="#About">About</a> •
+  <a href="#about">About</a> •
   <a href="#key-features">Key Features</a> •
-  <a href="#how-to-use">How it works</a>
+  <a href="#how-it-works">How it works</a>
 </p>
 
 ## About
