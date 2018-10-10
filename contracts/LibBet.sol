@@ -10,6 +10,8 @@ contract LibBet {
   }
 
   struct Oracle {
+    string apiUrl;
+    string[] keyPath;
     address contractAddress; 
     uint32 executionTime;
   }
@@ -34,6 +36,8 @@ contract LibBet {
 
   bytes32 constant ORACLE_TYPEHASH = keccak256(
     "Oracle(",
+    "string apiUrl",
+    "string[] keyPath",
     "address contractAddress",
     "uint32 executionTime",
     ")"
@@ -78,6 +82,7 @@ contract LibBet {
   function hash(Oracle _oracle) internal pure returns (bytes32) {
     return keccak256(abi.encode(
       ORACLE_TYPEHASH,
+      keccak256(bytes(_oracle.apiUrl)),
       _oracle.contractAddress,
       _oracle.executionTime
     ));

@@ -2,7 +2,7 @@
   "initiators": [
     {
       "type": "RunLog",
-      "params": { "address": "Chainlinked contract address" }
+      "params": { "address": "Chainlinked contract address" } // What should this address be? variable?
     }
   ],
   "tasks": [

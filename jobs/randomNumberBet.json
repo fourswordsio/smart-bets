@@ -1,0 +1,19 @@
+{
+  "initiators": [
+    {
+      "type": "RunLog",
+    }
+  ],
+  "tasks": [
+    { "type": "randomNumber" },
+    { "type": "copy",
+      "params": {"copyPath": ["details", "current"]}},
+    { "type": "multiply",
+      "params": {"times": 100 }},
+    { "type": "ethuint256" },
+    { "type": "ethtx" }
+    { "type": "Multiply" },
+    { "type": "EthUint256" },
+    { "type": "EthTx" }
+  ]
+}
