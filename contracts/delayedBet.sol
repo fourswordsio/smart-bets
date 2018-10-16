@@ -6,7 +6,7 @@ import "./Requester.sol"; // TODO: Remove this dependency
 import "./ChainlinkContracts.sol"; // Pull in Ownable
 pragma experimental ABIEncoderV2;
 
-contract delayedPriceBetConsumer is SmartBet, Ownable {
+contract delayedBet is SmartBet, Ownable {
   // Force all consumers to use SmartBets oracle address?
   address constant ROPSTEN_ORACLE_ADDRESS = 0x261a3f70acdc85cfc2ffc8bade43b1d42bf75d69;
 
@@ -31,13 +31,14 @@ contract delayedPriceBetConsumer is SmartBet, Ownable {
   );
 
   // All entry points to consumer: startBet. TODO: Make this a template?
-  // Can have a contract in front of this to swap context from relayer to taker
+  // Can have a contract in front of this to swap context from relayer to taker. 
+  // Will the taker or the relayer make the startBet transaction?
   //function startBet(Bet memory _bet, address _takerAddress, bytes _signature) public {
   function startBet(Bet memory _bet, address _takerAddress) public {
-    assertStartableBet(_bet, _takerAddress, _signature);
+    //assertStartableBet(_bet, _takerAddress, _signature);
 
     //requester.lastEthPrice(
-    requester.delayedPriceBet(
+    requester.delayedBet(
       // Should this URL be passed in from the relayer? It would allow for full customization,
       // but would it decrease security?
       // Yes, parameterize it: Potentially one contract per bet type. Would decrease security?
@@ -49,8 +50,9 @@ contract delayedPriceBetConsumer is SmartBet, Ownable {
       _bet.oracleSpec.apiUrl,
       _bet.oracleSpec.keyPath,
       delay(_bet.oracleSpec.executionTime),
-      hash(_bet),
-      "fulfillLastPrice(bytes32,uint256)", 
+      //hash(_bet),
+      //"fulfillLastPrice(bytes32,uint256)", 
+      "fulfillLastPrice(bytes32)", 
       address(this)
     );
   }
