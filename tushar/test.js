@@ -263,9 +263,6 @@ var rawOracle = {
 		executionTime: 100
 	}
 //
-// //var testOracle = Oracle(rawOracle);
-// //Oracle(rawOracle);
-//
 var rawBet = {
 		betId: "betId123",
 		makerAddress: '0xe74ebb5c267cbc276637e39f3df469d894f08426',
